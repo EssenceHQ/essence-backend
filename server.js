@@ -1,32 +1,33 @@
+import dotenv from "dotenv";
 import express from "express";
 import morgan from "morgan";
 import conn from "./Db/conn.js";
 import cors from "cors";
 /**controllers */
-
 import authRouter from "./Routes/authRoutes.js";
-
 /** middleware */
-
 import userRouter from "./Routes/userRoutes.js";
+
+dotenv.config();
 const app = express();
+const port = process.env.PORT || 8000;
 app.use(
   cors({
-    origin: "*",
+    origin: `${process.env.FORNTEND_END_POINT}`,
     credentials: true,
   })
 );
 app.disable("x-powered-by");
 app.use(morgan("tiny"));
 app.use(express.json());
-app.use("/auth", authRouter);
-app.use("/user", userRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 app.get("/", (req, res) => {
-  res.status(404).json({ error: "page not found actually" });
+  res.status(404).json({ error: "API Not Found!" });
 });
 conn()
   .then(() => {
-    app.listen("3000", () => {
+    app.listen(port, () => {
       console.log("server is up and running");
     });
   })

@@ -1,20 +1,12 @@
 import User from "../model/UserModel.js";
 
-/*
-
-    localhost:3000/auth/register
-
-    @params : {
-    "userName": "saksham",
-    "authId": "askdfjlasjfkasf",
-    "email": "sakshamyogesh@gmail.com",
-    "stats": [],
-    "goals": []
-  }
- */
+// @desc  POST:To create a new User
+// @route /api/register
+// @payload   {username, authId, email, stats, goals}
+// @access    private
 export const registerUser = async (req, res) => {
   try {
-    const { userName, authId, email, stats, goals } = req.body;
+    const { userName, authId, email } = req.body;
     console.log(req.body);
     if (!userName || !authId || !email) {
       throw new Error("paramaters missing");
@@ -23,34 +15,35 @@ export const registerUser = async (req, res) => {
       userName: userName,
       authId: authId,
       email: email,
-      stats: stats,
-      goals: goals,
+      stats: [],
+      goals: [],
     });
     user
       .save()
       .then(() => {
-        res.status(200).json({ message: "Registered Successfully" });
+        res.status(200).json({ message: "Registered Successfully", code: 1 });
       })
       .catch((err) => {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ error: err.message, code: 0 });
       });
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    res.status(401).json({ error: err.message, code: 0 });
   }
 };
-/*
 
-    localhost:3000/auth/login
-
-    request : {
-  
-    user: {},
-   
-  }
- */
-
+// @desc  POST:To verify login and return user details
+// @route /api/login
+// @payload   user from getUser middleware
+// @access    private
 export const loginUser = async (req, res) => {
   const user = req.user;
-
-  return res.status(200).json({ user: user });
+  const { userName, email, authId, stats, goals } = user;
+  const data = {
+    userName,
+    email,
+    authId,
+    stats,
+    goals,
+  };
+  return res.status(200).json({ message: "User Found!", data: data, code: 1 });
 };

@@ -8,19 +8,43 @@ const UserModel = new mongoose.Schema({
   authId: {
     type: String,
     require: true,
+    unique: true,
+  },
+  createdAt: {
+    type: Date,
+    default: () => Date.now(),
   },
   email: {
     type: String,
     require: true,
+    unique: true,
   },
-  stats: {
-    type: Array,
-    default: [],
-  },
-  goals: {
-    type: Array,
-    default: [],
-  },
+  stats: [
+    {
+      date: {
+        type: Date,
+      },
+      timeSpent: {
+        type: Number,
+      },
+      notified: {
+        type: Number,
+      },
+    },
+  ],
+  goals: [
+    {
+      date: {
+        type: Date,
+      },
+      target: {
+        type: Number,
+      },
+      achieved: {
+        type: Boolean,
+      },
+    },
+  ],
 });
 
 const User = mongoose.model("User", UserModel);
