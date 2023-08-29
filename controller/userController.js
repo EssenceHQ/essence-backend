@@ -1,8 +1,4 @@
-import express from "express";
 import User from "../model/UserModel.js";
-
-const userRouter = express.Router();
-
 /*
 
   localhost:3000/user/:id
@@ -14,12 +10,9 @@ const userRouter = express.Router();
     "detect" : 0
 }
 
-  query : {
-    stats : true
-    
-  }
+  
  */
-userRouter.put("/:id", async (req, res) => {
+export const updateUserTime = async (req, res) => {
   const userId = req.params.id;
 
   const { date, incrementTime, detect } = req.body;
@@ -72,15 +65,4 @@ userRouter.put("/:id", async (req, res) => {
   } catch (error) {
     res.status(501).json({ message: error.message });
   }
-});
-
-userRouter.put("/updateUser/:id", async (req, res) => {
-  const userId = req.params.id;
-  const { date, goal } = req.body;
-
-  try {
-    const user = await User.findById(userId);
-  } catch (error) {}
-});
-
-export default userRouter;
+};

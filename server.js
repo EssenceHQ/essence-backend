@@ -1,16 +1,22 @@
 import express from "express";
 import morgan from "morgan";
 import conn from "./Db/conn.js";
-import User from "./model/UserModel.js";
-
+import cors from "cors";
 /**controllers */
 
-import authRouter from "./controller/authController.js";
+import authRouter from "./Routes/authRoutes.js";
 
 /** middleware */
 
-import userRouter from "./controller/userController.js";
+import userRouter from "./Routes/userRoutes.js";
 const app = express();
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+app.disable("x-powered-by");
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use("/auth", authRouter);

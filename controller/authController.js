@@ -1,7 +1,4 @@
-import express from "express";
 import User from "../model/UserModel.js";
-import getUser from "../middleware/getUser.js";
-const authRouter = express.Router();
 
 /*
 
@@ -15,7 +12,7 @@ const authRouter = express.Router();
     "goals": []
   }
  */
-authRouter.post("/register", async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { userName, authId, email, stats, goals } = req.body;
     console.log(req.body);
@@ -40,7 +37,7 @@ authRouter.post("/register", async (req, res) => {
   } catch (err) {
     res.status(401).json({ message: err.message });
   }
-});
+};
 /*
 
     localhost:3000/auth/login
@@ -52,10 +49,8 @@ authRouter.post("/register", async (req, res) => {
   }
  */
 
-authRouter.post("/login", getUser, async (req, res) => {
+export const loginUser = async (req, res) => {
   const user = req.user;
 
   return res.status(200).json({ user: user });
-});
-
-export default authRouter;
+};
