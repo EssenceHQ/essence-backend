@@ -6,8 +6,8 @@ import User from "../model/UserModel.js";
   params : {
 
     "date":"02-08-2023",
-    "incrementTime":30,
-    "detect" : 0
+    "timeSpent":30,
+    "notified" : 0
 }
 
   
@@ -15,21 +15,34 @@ import User from "../model/UserModel.js";
 export const updateUserTime = async (req, res) => {
   const userId = req.params.id;
 
-  const { date, incrementTime, detect } = req.body;
+  const { timeSpent, notified, date } = req.body;
   try {
+    console.log(userId);
+    console.log("body", req.body);
     const user = await User.findById(userId);
     console.log(user);
     const statsArray = user.stats;
     const index = statsArray.findIndex((element) => {
-      return element.date === date;
+      const alreadyStoredDate = new Date(element.date);
+      const requiredDate = new Date(date);
+      if (
+        alreadyStoredDate.getMonth() === requiredDate.getMonth() &&
+        alreadyStoredDate.getFullYear() === requiredDate.getFullYear() &&
+        alreadyStoredDate.getDate() === requiredDate.getDate()
+      ) {
+        return true;
+      } else {
+        return false;
+      }
     });
+    console.log(index);
     if (index >= 0) {
       // update the previous stats for that day
 
       user.stats[index] = {
         date: user.stats[index].date,
-        time: user.stats[index].time + incrementTime,
-        detect: user.stats[index].detect + detect,
+        timeSpent: user.stats[index].timeSpent + timeSpent,
+        notified: user.stats[index].notified + notified,
       };
     } else {
       // create new information for that date
@@ -37,19 +50,25 @@ export const updateUserTime = async (req, res) => {
         statsArray.splice(0, 1);
       }
       const newArray = [...statsArray];
-      newArray.push({ date: date, time: incrementTime, detect: detect });
+      newArray.push({
+        date: date,
+        timeSpent: +timeSpent,
+        notified: +notified,
+      });
       user.stats = newArray;
+      console.log(newArray);
+      console.log("created");
     }
     const goalIndex = user.goals.findIndex((element) => {
-      return element.data === data;
+      return element.date === date;
     });
 
     if (goalIndex >= 0) {
-      if (user.stats[index].time >= user.goals[goalIndex].time) {
+      if (user.stats[index].timeSpent >= user.goals[goalIndex].target) {
         user.goals[goalIndex] = {
           acheived: true,
-          date: user.goals[goalIndex].time,
-          goalTime: user.goals[goalIndex].goalTime,
+          date: user.goals[goalIndex].date,
+          target: user.goals[goalIndex].target,
         };
       }
     }
