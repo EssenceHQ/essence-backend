@@ -13,7 +13,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 app.use(
   cors({
-    origin: `${process.env.FORNTEND_END_POINT}`,
+    origin: `*`,
     credentials: true,
   })
 );

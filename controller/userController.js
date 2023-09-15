@@ -80,8 +80,26 @@ export const updateUserTime = async (req, res) => {
       .catch((err) => {
         console.log(err.message);
       });
-    res.status(200).json({ user: user });
+    res.status(200).json({ message: "Successfully saved the data", code: 1 });
   } catch (error) {
     res.status(501).json({ message: error.message });
+  }
+};
+
+export const getUserStats = async (req, res) => {
+  const userId = req.params.id;
+  console.log("userId ", userId);
+  try {
+    const user = await User.findById(userId);
+    console.log("user" + user);
+    if (!user) {
+      res.status(400).json({ message: "User Not found!", code: 0 });
+    } else {
+      res
+        .status(200)
+        .json({ stats: user.stats, code: 1, message: "Successfull" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message, code: 0 });
   }
 };
