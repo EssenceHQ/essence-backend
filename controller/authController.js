@@ -20,10 +20,19 @@ export const registerUser = async (req, res) => {
     });
     user
       .save()
-      .then(() => {
-        res.status(200).json({ message: "Registered Successfully", code: 1 });
+      .then((userInfo) => {
+        res.status(200).json({
+          data: {
+            authId: userInfo.authId,
+            userId: userInfo["_id"],
+            userName: userName,
+          },
+          message: "Registered Successfully",
+          code: 1,
+        });
       })
       .catch((err) => {
+        console.log(err.message);
         res.status(500).json({ error: err.message, code: 0 });
       });
   } catch (err) {
@@ -39,11 +48,10 @@ export const loginUser = async (req, res) => {
   const user = req.user;
   const { userName, email, authId, stats, goals } = user;
   const data = {
+    userId: user["_id"],
     userName,
-    email,
+
     authId,
-    stats,
-    goals,
   };
   return res.status(200).json({ message: "User Found!", data: data, code: 1 });
 };
